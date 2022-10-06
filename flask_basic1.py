@@ -14,4 +14,4 @@ def hello_world():
 if __name__ == "__main__":
     app.run(debug=True)
 
-# Use 'curl -v http:127.0.0.1:5000' to see output without browser
+# Use 'curl -v http:127.0.0.1:5000/' to see output without browser
