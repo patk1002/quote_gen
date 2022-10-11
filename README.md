@@ -10,43 +10,61 @@ This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
 ```
-for app_sample.py to the following within Python:
+for quote_app.py, use the following within Python:
 ```
->>> from app_sample import db
->>> from app_sample import app
+>>> from quote_app import db
+>>> from quote_app import app
 >>> from flask import current_app
 >>> with app.app_context():
 ...     db.create_all()
 ... 
 >>> 
 ```
-mv ./instance/users.db ./users.db
 
-## Sample curl commands to use the app:
+## Start the Flask app
+python quote_app.py
+
+## Stop the Flask app
+Control-C in the terminal window from which quote_app.py was started.
+
+## Sample curl commands to use quote_app:
 ```
-patu@DESKTOP-BSP4SEV:~/my_git_repos/quote_gen$ curl http://127.0.0.1:5000/api/users
-[]
-[]
-patu@DESKTOP-BSP4SEV:~/my_git_repos/quote_gen$ curl http://127.0.0.1:5000/api/users/0
-<!doctype html>
-<html lang=en>
-<title>404 Not Found</title>
-<h1>Not Found</h1>
-<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
-patu@DESKTOP-BSP4SEV:~/my_git_repos/quote_gen$ curl -H "Content-Type: application/json" -X GET http://127.0.0.1:5000/api/users/1
-<!doctype html>
-<html lang=en>
-<title>404 Not Found</title>
-<h1>Not Found</h1>
-<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
-patu@DESKTOP-BSP4SEV:~/my_git_repos/quote_gen$ curl -H "Content-Type: application/json" -X POST -d '"username": "patk", "password": "secretpw", "first_name": Pat", "last_name": "Kelly", "age": 50'  http://127.0.0.1:5000/api/users/1
-<!doctype html>
-<html lang=en>
-<title>404 Not Found</title>
-<h1>Not Found</h1>
-<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
-patu@DESKTOP-BSP4SEV:~/my_git_repos/quote_gen$ curl -H "Content-Type: application/json" -X POST -d '"username": "patk", "password": "secretpw", "first_name": Pat", "last_name": "Kelly", "age": 50'  http://127.0.0.1:5000/api/users
-{
-    "message": "Failed to decode JSON object: Extra data: line 1 column 11 (char 10)"
+curl --location --request GET '127.0.0.1:5000/api/quotes'
+curl --location --request POST '127.0.0.1:5000/api/quotes' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "quote_text": "The first quote",
+    "quote_date": "2022-10-10",
+    "quote_author": "Pat Kelly",
+    "quote_url": "empty"
+}'
+
+```
+
+## Sample Python code to use quote_app:
+```
+# Get all quotes
+import requests
+url = "127.0.0.1:5000/api/quotes"
+payload={}
+headers = {}
+response = requests.request("GET", url, headers=headers, data=payload)
+print(response.text)
+
+# Create the first quote
+import requests
+import json
+url = "127.0.0.1:5000/api/quotes"
+payload = json.dumps({
+  "quote_text": "The first quote",
+  "quote_date": "2022-10-10",
+  "quote_author": "Pat Kelly",
+  "quote_url": "empty"
+})
+headers = {
+  'Content-Type': 'application/json'
 }
+response = requests.request("POST", url, headers=headers, data=payload)
+print(response.text)
+
 ```
