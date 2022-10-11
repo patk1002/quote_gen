@@ -21,14 +21,12 @@ ma = Marshmallow(app)
 
 class Quote(db.Model):
     quote_id = db.Column(db.Integer, primary_key=True)
-    quote_nickname = db.Column(db.String(32), unique=True)
     quote_text = db.Column(db.String(1024), unique=True)
     quote_date = db.Column(db.String(8))
     quote_author = db.Column(db.String(32))
     quote_url = db.Column(db.String(64))
 
-    def __init__(self, quote_nickname, quote_text, quote_date, quote_author, quote_url):
-        self.quote_nickname = quote_nickname
+    def __init__(self, quote_text, quote_date, quote_author, quote_url):
         self.quote_text = quote_text
         self.quote_date = quote_date
         self.quote_author = quote_author
@@ -37,7 +35,7 @@ class Quote(db.Model):
 
 class QuoteSchema(ma.Schema):
     class Meta: 
-        fields = ('quote_id', 'quote_nickname', 'quote_text', 'quote_date', 'quote_author', 'quote_url')
+        fields = ('quote_id', 'quote_text', 'quote_date', 'quote_author', 'quote_url')
 
 quote_schema = QuoteSchema()
 quotes_schema = QuoteSchema(many=True)
@@ -57,13 +55,12 @@ class QuoteManager(Resource):
 
     @staticmethod
     def post():
-        quote_nickname = request.json['quote_nickname']
         quote_text = request.json['quote_text']
         quote_date = request.json['quote_date']
         quote_author = request.json['quote_author']
         quote_url = request.json['quote_url']
 
-        quote = Quote(quote_nickname, quote_text, quote_date, quote_author, quote_url)
+        quote = Quote(quote_text, quote_date, quote_author, quote_url)
         db.session.add(quote)
         db.session.commit()
         return jsonify({
@@ -78,13 +75,11 @@ class QuoteManager(Resource):
             return jsonify({ 'Message': 'Must provide the quote quote_id' })
         quote = Quote.query.get(quote_id)
 
-        quote_nickname = request.json['quote_nickname']
         quote_text = request.json['quote_text']
         quote_date = request.json['quote_date']
         quote_author = request.json['quote_author']
         quote_url = request.json['quote_url']
 
-        quote.quote_nickname = quote_nickname 
         quote.quote_text = quote_text 
         quote.quote_date = quote_date 
         quote.quote_author = quote_author
