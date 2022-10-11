@@ -1,6 +1,6 @@
 # quote_gen repo
 
-## How to initially create the sqlite datbases:
+## How to initially create the sqlite database:
 
 When creating a sqlite database such as users.db, to avoid this error message:
 ```
@@ -30,6 +30,7 @@ Control-C in the terminal window from which quote_app.py was started.
 ## Sample curl commands to use quote_app:
 ```
 curl --location --request GET '127.0.0.1:5000/api/quotes'
+
 curl --location --request POST '127.0.0.1:5000/api/quotes' \
 --header 'Content-Type: application/json' \
 --data-raw '{
